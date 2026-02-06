@@ -1,0 +1,7 @@
+hydra-core
+pydantic
+torch
+torchvision
+pytorch-lightning
+torchmetrics
+omegaConf

@@ -1,0 +1,7 @@
+defaults:
+  - /train/optimizer@optimizer: adam
+  - /train/loss@loss_fn: cross_entropy
+  - /model@model: simple_model
+  - _self_
+
+_target_: src.tasks.classification.ClassificationTask

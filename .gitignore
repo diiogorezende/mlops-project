@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Hydra
+outputs/
+multirun/
+.hydra/
+
+# Dados
+data/
+
+# IDEs
+.vscode/
+.idea/
+
+# Environment Variables
+.env
+
+# PyTorch Lightning
+*.ckpt
+lightning_logs/

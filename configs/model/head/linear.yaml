@@ -1,0 +1,3 @@
+_target_: src.models.heads.LinearHead
+num_classes: 10
+in_features: 512

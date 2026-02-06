@@ -1,0 +1,5 @@
+defaults:
+  - backbone: resnet18
+  - head: linear
+
+_target_: src.models.simple_model.SimpleImageClassifier
