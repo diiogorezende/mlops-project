@@ -1,44 +1,40 @@
 import hydra
+from hydra.core.config_store import ConfigStore
 import torch
 from omegaconf import DictConfig, OmegaConf
-from src.schemas.config_schema import ConfigSchema
+from src.configs.project import ProjectConfig
+
+
+cs = ConfigStore.instance()
+cs.store(name="base_config", node=ProjectConfig)
 
 @hydra.main(version_base=None, config_path="configs", config_name="config")
 def main(cfg: DictConfig) -> None:
     """
-    Funcao principal que busca os arquivos YAML, combina esses arquivos
-    em um objeto DictConfig e injeta esse objeto na funcao principal.
+    Funcao principal que carrega as configuracoes, instancia os componentes do projeto e inicia o treinamento e teste.
 
     Args:
-        cfg (DictConfig): Objeto de configuracao que contem todas as configuracoes
-                          carregadas dos arquivos YAML.
+        cfg (DictConfig): Objeto de configuracao carregado pelo Hydra, contendo todas as configuracoes.
     """
-    # Converter o DictConfig para um dicionario normal do Python
-    cfg_dict = OmegaConf.to_container(cfg, resolve=True)
-    # Valida o dicionario usando o schema definido no Pydantic
-    config = ConfigSchema(**cfg_dict)
     print("Configurações carregadas e validadas com sucesso:")
-    print(config.model_dump_json(indent=4))
+    print(OmegaConf.to_yaml(cfg))
 
     # Instancia o DataModule
-    data_config_dict = config.data.model_dump(by_alias=True)
-    data_module = hydra.utils.instantiate(data_config_dict)
+    datamodule = hydra.utils.instantiate(cfg.data)
 
     # Instancia a Task
     print("\nInstanciando a Task (modelo, otimizador, funcao de perda)")
-    task_conf = config.task.model_dump(by_alias=True)
-    task = hydra.utils.instantiate(task_conf)
+    task = hydra.utils.instantiate(cfg.task)
 
     # Instancia o Trainer
     print("\nInstanciando o Trainer do PyTorch Lightning")
-    trainer_conf = config.trainer.model_dump(by_alias=True)
-    trainer = hydra.utils.instantiate(trainer_conf)
+    trainer = hydra.utils.instantiate(cfg.trainer)
 
     print("\nIniciando o treinamento")
-    trainer.fit(model=task, datamodule=data_module)
+    trainer.fit(model=task, datamodule=datamodule)
 
     print("\nIniciando o teste")
-    trainer.test(model=task, datamodule=data_module)
+    trainer.test(model=task, datamodule=datamodule)
 
 
 if __name__ == "__main__":

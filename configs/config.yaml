@@ -1,9 +1,10 @@
 defaults:
+  - base_config
   - _self_ # usa as configs desse arquivo
-  - train/task@task: classification # carrega o arquivo configs/train/task/classification.yaml
+  - /train/task@task: classification # carrega o arquivo configs/train/task/classification.yaml
   - /train/trainer@trainer: default # carrega o arquivo trainer/default.yaml
-  - data: fashion_mnist # carrega o arquivo fashion_mnist.yaml
+  - /data@data: fashion_mnist # carrega o arquivo fashion_mnist.yaml
 
 project_name: "FashionMNIST_Project"
-version: "1.0.0"
+version: "2.0.0"
 debug: true
